@@ -26,6 +26,7 @@ import {
   subYears,
 } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
+import dynamic from 'next/dynamic';
 import {
   ReactNode,
   createContext,
@@ -553,7 +554,7 @@ const CalendarTodayTrigger = forwardRef<
 });
 CalendarTodayTrigger.displayName = 'CalendarTodayTrigger';
 
-const CalendarCurrentDate = () => {
+const CalendarCurrentDate = dynamic(() => Promise.resolve(() => {
   const { date, view } = useCalendar();
 
   return (
@@ -561,7 +562,10 @@ const CalendarCurrentDate = () => {
       {format(date, view === 'day' ? 'dd MMMM yyyy' : 'MMMM yyyy')}
     </time>
   );
-};
+}), {
+  ssr: false,
+  loading: () => <time className="tabular-nums">Loading...</time>
+});
 
 const TimeTable = () => {
   const now = new Date();
